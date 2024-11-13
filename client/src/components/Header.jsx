@@ -1,10 +1,12 @@
 import {FaSearch} from 'react-icons/fa';
 import {Link} from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch  } from 'react-redux';
+import { useState } from 'react';
 
 function Header() {
     const {currentUser} =  useSelector(state=>state.user);
-   
+    const [isOpen, setIsOpen] = useState(false);
+    const dispatch = useDispatch();
     return (
     <header className='bg-slate-200 shadow-sm'>
         <div className='flex justify-between items-center max-w-6xl mx-auto p-3'>
@@ -22,12 +24,55 @@ function Header() {
             <Link to="/"><li className='hidden sm:inline text-slate-700 hover:underline'>Home</li></Link>
             <Link to="/about"><li className='hidden sm:inline text-slate-700 hover:underline'>About</li></Link>
 
-            <Link to="/profile">
+            <div className='relative'>
             {currentUser ? (
-                <img className="rounded-full h-7 w-7 object-cover" src={currentUser.avatar} alt="profile" />
-            ): 
-            (<li className='text-slate-700 hover:underline'>Sign in </li>)}
-                </Link>
+              <>
+                <img
+                  className='rounded-full h-7 w-7 object-cover cursor-pointer'
+                  src={currentUser.avatar}
+                  alt='profile'
+                  onClick={() => setIsOpen(!isOpen)}
+                />
+                {isOpen && (
+                  <div className='absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg'>
+                    <Link
+                      to='/profile'
+                      className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Profile
+                    </Link>
+                    <Link
+                      to='/userlist'
+                      className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                      onClick={() => setIsOpen(false)}
+                    >
+                      User List
+                    </Link>
+                    <button
+                      onClick=""
+                      className='w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                    >
+                      Sign Out
+                    </button>
+                    <button
+                      onClick={() => {
+                        // Add delete account functionality
+                        setIsOpen(false);
+                      }}
+                      className='w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100'
+                    >
+                      Delete Account
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <Link to='/sign-in'>
+                <li className='text-slate-700 hover:underline'>Login</li>
+              </Link>
+            )}
+          </div>
         </ul>
         </div>
     </header>
