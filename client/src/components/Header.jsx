@@ -95,11 +95,11 @@ function Header() {
                       Profile
                     </Link>
                     <Link
-                      to='/estate-list'
+                      to='/property-listing'
                       className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
                       onClick={() => setIsOpen(false)}
                     >
-                      User List
+                      Property List
                     </Link>
                     <button
                       onClick={handleSignOut}

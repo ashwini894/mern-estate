@@ -6,6 +6,8 @@ import About from './pages/About';
 import Profile from './pages/Profile';
 import Header from './components/Header';
 import PrivateRoute from './components/PrivateRoute';
+import PropertyListing from './pages/PropertyListing';
+import AddProperty from './pages/AddProperty';
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
         <Route path='/about' element={<About />} />
         <Route element={<PrivateRoute />}>
           <Route path='/profile' element={<Profile />} />
+          <Route path='/property-listing' element={<PropertyListing />} />
+          <Route path='/add-property' element={<AddProperty />} />
         </Route>
       </Routes>
       </BrowserRouter>
