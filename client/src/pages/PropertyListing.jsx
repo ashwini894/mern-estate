@@ -37,6 +37,25 @@ function PropertyListing() {
     }
   }, [currentUser]);
 
+  const handleListingDelete = async (listingId)=>{
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method:"DELETE",
+      });
+
+      const data = await res.json();
+      if(data.success===false){
+        console.log(data.message);
+        return;
+      }
+
+      setUserListings((prev) => 
+      prev.filter((listing)=>listing._id !==listingId));
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Property Listing</h1>
@@ -79,7 +98,8 @@ function PropertyListing() {
               </button>
 
               {/* Delete Button */}
-              <button
+              <button 
+                onClick={()=>handleListingDelete(listing._id)}
                 className="flex items-center justify-center p-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-200"
               >
                 <FaTrash className="text-xl" />
