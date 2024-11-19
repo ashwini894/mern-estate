@@ -9,6 +9,7 @@ import PrivateRoute from './components/PrivateRoute';
 import PropertyListing from './pages/PropertyListing';
 import AddProperty from './pages/AddProperty';
 import UpdateProperty from './pages/UpdateProperty';
+import PropertyDetails from './pages/PropertyDetails';
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<SignUp />} />
         <Route path='/about' element={<About />} />
+        <Route path='/property-details/:listingId' element={<PropertyDetails />} />
+
         <Route element={<PrivateRoute />}>
           <Route path='/profile' element={<Profile />} />
           <Route path='/property-listing' element={<PropertyListing />} />

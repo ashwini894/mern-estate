@@ -77,7 +77,7 @@ function PropertyListing() {
           <h1 className='text-center my-7 text-2xl font-semibold'>Your property listing</h1>
         {userListings.map((listing) => (
           <div key={listing._id} className='border rounded-lg p-3 flex justify-between items-center gap-4'>
-            <Link to={`/listing/${listing._id}`}>
+            <Link to={`/property-details/${listing._id}`}>
               <img
                 src={Array.isArray(listing.imageUrls) ? listing.imageUrls[0] : listing.imageUrls} // Handle array or string
                 alt='listing cover'
@@ -85,7 +85,7 @@ function PropertyListing() {
               />
             </Link>
             
-            <Link to={`/listing/${listing._id}`} className='text-slate-700 font-semibold flex-1 hover:underline'>
+            <Link to={`/property-details/${listing._id}`} className='text-slate-700 font-semibold flex-1 hover:underline'>
               <p>{listing.name}</p>
             </Link>
 

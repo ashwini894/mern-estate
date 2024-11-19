@@ -70,7 +70,7 @@ function AddProperty() {
                 console.log(data.message)
                 setError(data.message);
             }
-            navigate(`/listing/${data._id}`);
+            navigate(`/property-listing`);
         } catch (error) {
             setError(error.messaage);
             setLoading(false);
