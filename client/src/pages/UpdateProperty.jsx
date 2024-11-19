@@ -1,8 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 
-function AddProperty() {
+function UpdateProperty() {
     const { currentUser } = useSelector((state) => state.user);
     const [formData,setFormData] = useState({
         name:"",
@@ -21,6 +21,7 @@ function AddProperty() {
     const[error,setError] = useState(false);
     const[loading,setLoading]= useState(false); 
     const navigate = useNavigate(); 
+    const params = useParams();
     const handleChange = (e) =>{
         if(e.target.id==='sale' || e.target.id==='rent'){
             setFormData({
@@ -43,7 +44,22 @@ function AddProperty() {
             })
         }
     };
-    console.log(formData)
+
+    useEffect(() => {
+      const fetchListing = async () => {
+        const listingId =params.listingId;
+        const res = await fetch(`/api/listing/get/${listingId}`);
+        const data = await res.json();
+        if(data.success===false){
+          console.log(data.messaage);
+          return;
+        }
+        setFormData(data);
+        console.log(listingId);
+      }
+
+      fetchListing();
+    },[])
     const handleSubmit = async(e) =>{
      
         e.preventDefault();
@@ -55,7 +71,7 @@ function AddProperty() {
 
             setLoading(true);
             setError(false);
-            const res = await fetch("/api/listing/create",{
+            const res = await fetch(`/api/listing/update/${params.listingId}`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -67,7 +83,6 @@ function AddProperty() {
          
             setLoading(false);
             if(data.success===false){
-                console.log(data.message)
                 setError(data.message);
             }
             navigate(`/listing/${data._id}`);
@@ -80,7 +95,7 @@ function AddProperty() {
 
   return (
     <main className='p-3 max-w-4xl mx-auto'>
-      <h1 className='text-3xl font-semibold text-center my-7'>Add your property</h1>
+      <h1 className='text-3xl font-semibold text-center my-7'>Update your property</h1>
         {error && <p className="text-red-700 text-sm">{error}</p>}
         <form  onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-4'>
             <div className='flex flex-col gap-4 flex-1'>
@@ -160,7 +175,7 @@ function AddProperty() {
                         <div className='flex items-center gap-2'>
                             <input type="number" id="discountedPrice" min='0' max='10000000' className='p-2 border border-gray-300 rounded-lg' 
                             onChange={handleChange} 
-                            value={formData.discountedPrice} 
+                            value={formData.discountPrice} 
                             required />
                         <div className='flex flex-col items-center'>
                                 <p>Discounted Price</p>
@@ -180,7 +195,7 @@ function AddProperty() {
                     <input className="p-2 border border-gray-300 rounded- w-full" type="file" id="images" accept="images/*" multiple />
                     <button className="p-2 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:*:opacity-80">Upload</button> 
                 </div>
-                 <button disabled={loading} type="submit" className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">{loading? 'Saving..':'Save'}</button>
+                 <button disabled={loading} type="submit" className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">{loading? 'Updating..':'Update'}</button>
             </div>
             
         </form>
@@ -188,4 +203,4 @@ function AddProperty() {
   )
 }
 
-export default AddProperty
+export default UpdateProperty

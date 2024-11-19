@@ -91,11 +91,13 @@ function PropertyListing() {
 
             <div className="flex space-x-4">
               {/* Edit Button */}
+              <Link to={`/update-property/${listing._id}`} >
               <button
                 className="flex items-center justify-center p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-200"
               >
                 <FaEdit className="text-xl" />
               </button>
+              </Link>
 
               {/* Delete Button */}
               <button 
