@@ -173,7 +173,7 @@ function UpdateProperty() {
 
                     {formData.offer && (
                         <div className='flex items-center gap-2'>
-                            <input type="number" id="discountedPrice" min='0' max='10000000' className='p-2 border border-gray-300 rounded-lg' 
+                            <input type="number" id="discountPrice" min='0' max='10000000' className='p-2 border border-gray-300 rounded-lg' 
                             onChange={handleChange} 
                             value={formData.discountPrice} 
                             required />
