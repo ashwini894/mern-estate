@@ -10,6 +10,7 @@ import PropertyListing from './pages/PropertyListing';
 import AddProperty from './pages/AddProperty';
 import UpdateProperty from './pages/UpdateProperty';
 import PropertyDetails from './pages/PropertyDetails';
+import Search from './pages/Search';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path='/sign-up' element={<SignUp />} />
         <Route path='/about' element={<About />} />
         <Route path='/property-details/:listingId' element={<PropertyDetails />} />
+        <Route path='/search' element={<Search />} />
 
         <Route element={<PrivateRoute />}>
           <Route path='/profile' element={<Profile />} />
