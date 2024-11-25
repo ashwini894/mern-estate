@@ -90,7 +90,7 @@ export const getListings = async (req,res,next) => {
         }
 
         const listings = await Listing.find({
-            name:{$regex:searchTerm, $position:'i'},
+            name: { $regex: searchTerm, $options: 'i' }, // case-insensitive search
             offer,
             furnished,
             parking,
