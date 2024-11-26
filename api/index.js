@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import userRouter from './routes/user.route.js'
 import authRouter from './routes/auth.route.js'
 import listingRouter from './routes/listing.route.js'
+import path from 'path'
 
 import cookieParser from 'cookie-parser';
 
@@ -17,9 +18,11 @@ mongoose.connect(process.env.MONGO).then(() => {
 });
 mongoose.set('debug', true);
 
-//mongoose.set('bufferCommands', false);
+//create dynamic dirname to app work on any computer
+const __dirname = path.resolve();
 
 const app = express();
+
 //use below to allow json as a input to server
 app.use(express.json());
 app.use(cookieParser());
@@ -32,6 +35,14 @@ app.listen(3000, ()=>{
 app.use('/api/user',userRouter);
 app.use('/api/auth',authRouter);
 app.use('/api/listing',listingRouter);
+
+//if we run only / means front and create static folder i.e dynamic path client folder and build folder i.e dist
+app.use(express.static(path.join(__dirname,'/client/dist')));
+
+//now any address other than /api and / should run index.html
+app.get('*',(req,res)=>{
+    res.sendFile(path.join(__dirname,'client','dist','index.html'))
+})
 
 //middleware
 app.use((err,req,res,next) => {
