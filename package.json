@@ -1,21 +1,18 @@
 {
   "name": "mern-realestate",
   "version": "1.0.0",
-  "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon api/index.js",
+    "dev": "concurrently \"npm run dev --prefix api\" \"npm run dev --prefix client\"",
     "start": "node api/index.js",
-    "build": "npm install && npm install --prefix client && npm run build --prefix client"
+    "build": "npm install && npm install --prefix client && npm run build --prefix client && npm run build --prefix api"
+
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
-  "engines": {
-    "node": "22.11.0"
-  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
@@ -24,5 +21,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.0",
     "nodemon": "^3.1.7"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0" 
   }
 }
