@@ -1,15 +1,49 @@
 import Listing from "../models/listing.model.js";
+import multer from "multer";
 import { errorHandler } from "../utils/error.js";
+import path from "path";
 
-export const createListing = async (req,res,next)=>{
-    try {
-        const listing =await Listing.create(req.body);
-        return res.status(201).json(listing); 
-    } catch (error) {
-        console.log(error)
+// Configure Multer Storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/uploads/"); // Save files in the uploads folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 2 * 1024 * 1024 }, // Limit files to 2 MB each
+}).array("images", 6);
+
+export const createListing = [
+  async (req, res, next) => {
+    upload(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+
+      try {
+        const imageUrls = req.files.map(
+          (file) => `${req.protocol}://${req.get("host")}/${file.path}`
+        );
+
+        const listingData = {
+          ...req.body,
+          imageUrls, // Store the uploaded file URLs
+        };
+
+        const listing = await Listing.create(listingData);
+        return res.status(201).json({ success: true, listing });
+      } catch (error) {
+        console.error(error);
         next(error);
-    }
-}
+      }
+    });
+  },
+];
 
 export const deleteListing = async (req,res,next)=>{
     const listing = await Listing.findById(req.params.id);

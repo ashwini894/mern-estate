@@ -21,6 +21,10 @@ function AddProperty() {
     const[error,setError] = useState(false);
     const[loading,setLoading]= useState(false); 
     const navigate = useNavigate(); 
+
+    //Create a state uploadedFiles to store the list of currently uploaded files. Initially, it is empty.
+    const [uploadedFiles, setUploadedFiles] = useState([])
+
     const handleChange = (e) =>{
         if(e.target.id==='sale' || e.target.id==='rent'){
             setFormData({
@@ -43,6 +47,11 @@ function AddProperty() {
             })
         }
     };
+
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        setUploadedFiles(files);
+    };
     console.log(formData)
     const handleSubmit = async(e) =>{
      
@@ -55,12 +64,22 @@ function AddProperty() {
 
             setLoading(true);
             setError(false);
+
+            // Create FormData object to send images and other form data
+            const formDataToSend = new FormData();
+            uploadedFiles.forEach((file) => formDataToSend.append("images", file));
+            Object.keys(formData).forEach((key) =>
+                formDataToSend.append(key, formData[key])
+            );
+            formDataToSend.append("userRef", currentUser._id);
+
             const res = await fetch("/api/listing/create",{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({...formData,userRef:currentUser._id}), 
+                //body: JSON.stringify({...formData,userRef:currentUser._id}), 
+                body: formDataToSend,
             });
 
             const data = await res.json();
@@ -172,16 +191,42 @@ function AddProperty() {
                 </div>  
             </div>
 
-            <div className='flex flex-col flex-1 gap-4'>
-                <p className='font-semibold'> Images:
-                <span className="font-normal text-gray-600 ml-2">The First image will be the cover (max 6)</span>
-                </p>
-                <div className="flex gap-4">
-                    <input className="p-2 border border-gray-300 rounded- w-full" type="file" id="images" accept="images/*" multiple />
-                    <button className="p-2 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:*:opacity-80">Upload</button> 
+            <div className="flex flex-col flex-1 gap-4">
+            <p className="font-semibold">
+                Images:
+                <span className="font-normal text-gray-600 ml-2">
+                The First image will be the cover (max 6)
+                </span>
+            </p>
+            <div className="flex flex-col gap-4">
+                <input
+                type="file"
+                id="images"
+                accept="image/*"
+                multiple
+                onChange={handleFileChange}
+                className="p-2 border border-gray-300 rounded"
+                />
+                <div className="flex gap-4 flex-wrap">
+                {uploadedFiles.map((file, index) => (
+                    <img
+                    key={index}
+                    src={URL.createObjectURL(file)}
+                    alt="preview"
+                    className="w-20 h-20 object-cover border rounded-lg"
+                    />
+                ))}
                 </div>
-                 <button disabled={loading} type="submit" className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">{loading? 'Saving..':'Save'}</button>
             </div>
+            <button
+                disabled={loading}
+                type="submit"
+                className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+            >
+                {loading ? "Saving..." : "Save"}
+            </button>
+            </div>
+                   
             
         </form>
     </main>

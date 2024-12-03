@@ -35,6 +35,7 @@ app.listen(3000, ()=>{
 app.use('/api/user',userRouter);
 app.use('/api/auth',authRouter);
 app.use('/api/listing',listingRouter);
+app.use(express.static('public'));
 
 //if we run only / means front and create static folder i.e dynamic path client folder and build folder i.e dist
 app.use(express.static(path.join(__dirname,'/client/dist')));
