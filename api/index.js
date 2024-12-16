@@ -31,11 +31,13 @@ app.listen(3000, ()=>{
     console.log("Server is running on port 3000.!");
 });
 
+// Serve the public/uploads directory as static
+app.use('/api/public/uploads', express.static(path.join(__dirname, 'api/public/uploads')));
+
 //use all route here
 app.use('/api/user',userRouter);
 app.use('/api/auth',authRouter);
 app.use('/api/listing',listingRouter);
-app.use(express.static('public'));
 
 //if we run only / means front and create static folder i.e dynamic path client folder and build folder i.e dist
 app.use(express.static(path.join(__dirname,'/client/dist')));

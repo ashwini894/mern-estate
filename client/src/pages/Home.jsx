@@ -45,6 +45,7 @@ export default function Home() {
     };
     fetchOfferListings();
   }, []);
+
   return (
     <div>
       {/* top */}
@@ -76,7 +77,9 @@ export default function Home() {
             <SwiperSlide key={listing._id}>
               <div
                 style={{
-                  background: `url(${listing.imageUrls[0]}) center no-repeat`,
+                  background: listing.imageUrls && listing.imageUrls[0]
+                  ? `url(${listing.imageUrls[0].replace(/\\/g, "/")}) center center / cover no-repeat`
+                  : 'https://images.unsplash.com/photo-1605146769289-440113cc3d00?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVhbCUyMGVzdGF0ZXxlbnwwfHwwfHx8MA%3D%3D',
                   backgroundSize: 'cover',
                 }}
                 className='h-[500px]'

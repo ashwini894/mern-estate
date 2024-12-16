@@ -11,6 +11,7 @@ import AddProperty from './pages/AddProperty';
 import UpdateProperty from './pages/UpdateProperty';
 import PropertyDetails from './pages/PropertyDetails';
 import Search from './pages/Search';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path='/update-property/:listingId' element={<UpdateProperty />} />
         </Route>
       </Routes>
+      <Footer />
       </BrowserRouter>
     </>
   )

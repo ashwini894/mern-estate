@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 function AddProperty() {
     const { currentUser } = useSelector((state) => state.user);
+    //Add a state to store selected image files and previews.
+
     const [formData,setFormData] = useState({
         name:"",
         description:"",
@@ -49,10 +51,14 @@ function AddProperty() {
     };
 
     const handleFileChange = (e) => {
+        //convert file object to array
         const files = Array.from(e.target.files);
-        setUploadedFiles(files);
+        //array destructuring, which creates a new array by combining
+        //...prevFiles: The existing array of uploaded files.
+        //...files: The new array of files selected from the input.
+        setUploadedFiles((prevFiles) => [...prevFiles, ...files]);
     };
-    console.log(formData)
+  
     const handleSubmit = async(e) =>{
      
         e.preventDefault();
@@ -64,7 +70,7 @@ function AddProperty() {
 
             setLoading(true);
             setError(false);
-
+        
             // Create FormData object to send images and other form data
             const formDataToSend = new FormData();
             uploadedFiles.forEach((file) => formDataToSend.append("images", file));
@@ -72,13 +78,18 @@ function AddProperty() {
                 formDataToSend.append(key, formData[key])
             );
             formDataToSend.append("userRef", currentUser._id);
-
+            
+            // for (let pair of formDataToSend.entries()) {
+            //     console.log(pair[0], pair[1]);
+            //   }
+          
+          //  console.log(formDataToSend);
             const res = await fetch("/api/listing/create",{
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                //body: JSON.stringify({...formData,userRef:currentUser._id}), 
+                //headers: {
+                //    'Content-Type': 'application/json',
+                //},
+                //body: JSON.stringify({...formData,userRef:currentUser._id,formDataToSend}), 
                 body: formDataToSend,
             });
 

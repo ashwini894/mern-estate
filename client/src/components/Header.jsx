@@ -1,5 +1,5 @@
 import {FaSearch} from 'react-icons/fa';
-import {Link, useNavigate} from 'react-router-dom';
+import {Link, useNavigate, useLocation} from 'react-router-dom';
 import { useSelector,useDispatch  } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { 
@@ -18,7 +18,10 @@ function Header() {
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
     const dispatch = useDispatch();
-   
+    const location = useLocation();
+
+    const isActive = (path) => location.pathname === path;
+
     const handleSignOut = async() => {
         try {
             signOutUserStart();
@@ -93,8 +96,8 @@ function Header() {
             </button>
         </form>
         <ul className='flex gap-4'>
-            <Link to="/"><li className='hidden sm:inline text-slate-700 hover:underline'>Home</li></Link>
-            <Link to="/about"><li className='hidden sm:inline text-slate-700 hover:underline'>About</li></Link>
+            <Link to="/"><li className={`hidden sm:inline text-slate-700 hover:underline ${isActive("/") ? "active" : ""}`}> Home</li></Link>
+            <Link to="/about"><li className={`hidden sm:inline text-slate-700 hover:underline  ${isActive("/about") ? "active" : ""}`}>About</li></Link>
 
             <div className='relative'>
             {currentUser ? (

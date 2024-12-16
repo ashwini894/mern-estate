@@ -6,7 +6,7 @@ import path from "path";
 // Configure Multer Storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "public/uploads/"); // Save files in the uploads folder
+    cb(null, "api/public/uploads/"); // Save files in the uploads folder
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -24,8 +24,9 @@ export const createListing = [
       if (err) {
         return res.status(400).json({ success: false, message: err.message });
       }
-
+      
       try {
+        
         const imageUrls = req.files.map(
           (file) => `${req.protocol}://${req.get("host")}/${file.path}`
         );
@@ -64,24 +65,60 @@ export const deleteListing = async (req,res,next)=>{
     }
 }
 
-export const updateListing = async (req,res,next) => {
-    const listing = await Listing.findById(req.params.id);
+export const updateListing = async (req, res, next) => {
+    // Handle file uploads
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ success: false, message: err.message });
+        }
 
-    if(!listing){
-        return next(errorHandler(404,"Listing not found!"));
-    }
+        try {
+            const listing = await Listing.findById(req.params.id);
 
-    if(req.user.id !== listing.userRef){
-        return next(errorHandler(401,"You can only update your own listings!"));
-    }
+            if (!listing) {
+                return res.status(404).json({ success: false, message: "Listing not found!" });
+            }
 
-    try {
-        const updatedListing = await Listing.findByIdAndUpdate(req.params.id,req.body,{new:true});
-        res.status(200).json(updatedListing);
-    } catch (error) {
-        next(error);
-    }
-}
+            // Ensure the current user is updating their own listing
+            if (req.user.id !== listing.userRef.toString()) {
+                return res.status(401).json({ success: false, message: "You can only update your own listings!" });
+            }
+
+            // Get existing images (if any)
+            let imageUrls = listing.imageUrls || [];
+
+            // Add new images if any are uploaded
+            if (req.files && req.files.length > 0) {
+                const newImages = req.files.map(
+                    (file) => `${req.protocol}://${req.get("host")}/${file.path}`
+                );
+                // Combine the existing image URLs with the new ones
+                imageUrls = [...imageUrls, ...newImages];
+            }
+
+            // Ensure userRef is a single string and not an array
+            const userRef = Array.isArray(req.body.userRef) ? req.body.userRef[0] : req.body.userRef;
+
+            // Update the listing data with imageUrls
+            const updatedData = {
+                ...req.body,
+                userRef: userRef,  // Ensure userRef is a string
+                imageUrls,  // Updated image URLs
+            };
+
+            // Update the listing in the database
+            const updatedListing = await Listing.findByIdAndUpdate(req.params.id, updatedData, { new: true });
+
+            return res.status(200).json({ success: true, listing: updatedListing });
+        } catch (error) {
+            console.error(error);
+            next(error);
+        }
+    });
+};
+
+
+
 
 export const getListing = async (req,res,next) => {
     try {
