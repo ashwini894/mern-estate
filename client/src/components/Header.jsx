@@ -141,7 +141,7 @@ function Header() {
               </>
             ) : (
               <Link to='/sign-in'>
-                <li className='text-slate-700 hover:underline'>Login</li>
+                <li className={`hidden sm:inline text-slate-700 hover:underline ${isActive("/sign-in") ? "active" : ""}`}>Login</li>
               </Link>
             )}
           </div>
